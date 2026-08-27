@@ -1,0 +1,55 @@
+header {
+	backdrop-filter: blur(6px);
+}
+
+.logo {
+	display: inline-block;
+	font-family: 'Bebas Neue', sans-serif;
+	letter-spacing: 0.04em;
+	font-weight: 400;
+}
+
+/* Ensure logo inherits the header text color (white on transparent header, dark on scrolled) */
+header .logo {
+	color: inherit;
+}
+
+/* Increase specificity to override global `a.logo` color rules */
+header a.logo {
+	color: inherit !important;
+	text-decoration: none;
+}
+
+.site-nav a {
+	color: inherit;
+}
+
+.search-input {
+	width: 100%;
+	padding: 0.6rem 0.75rem;
+	border-radius: 8px;
+	border: 1px solid rgba(15, 23, 42, 0.06);
+}
+
+@media (max-width: 768px) {
+	.mobile-menu-panel {
+		position: absolute;
+		left: 0;
+		right: 0;
+		top: 64px;
+		background: white;
+		color: var(--color-accent-2);
+		padding: 1rem;
+		box-shadow: 0 8px 30px rgba(2,6,23,0.08);
+		border-bottom-left-radius: 12px;
+		border-bottom-right-radius: 12px;
+	}
+}
+
+.header-shadow {
+	box-shadow: 0 6px 24px rgba(2,6,23,0.08);
+}
+
+.nav-link:hover {
+	opacity: 0.7;
+}
