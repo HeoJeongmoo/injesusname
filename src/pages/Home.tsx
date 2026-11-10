@@ -136,7 +136,7 @@ function DropFeature() {
           transition={{ duration: 0.6 }}
         />
         <div className="absolute top-5 left-5 micro text-ash">Fig. {pad(hero.id)}</div>
-        <div className="absolute bottom-5 left-1/2 -translate-x-1/2 flex border border-line">
+        <div className="absolute bottom-0 md:bottom-5 left-1/2 -translate-x-1/2 flex border border-line">
           {(['back', 'front'] as const).map((v) => (
             <button
               key={v}
