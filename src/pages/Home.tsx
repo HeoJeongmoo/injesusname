@@ -125,7 +125,7 @@ function DropFeature() {
   return (
     <section className="grid lg:grid-cols-2 border-b border-line">
       {/* image */}
-      <div className="relative bg-black aspect-square lg:aspect-auto lg:min-h-[100svh] flex items-center justify-center overflow-hidden lg:border-r border-line">
+      <div className="relative bg-black aspect-square lg:aspect-auto lg:min-h-[100svh] flex items-center justify-center overflow-hidden lg:border-r border-line pb-5 md:pb-0">
         <motion.img
           key={view}
           src={view === 'back' ? hero.image : hero.hoverImage}
