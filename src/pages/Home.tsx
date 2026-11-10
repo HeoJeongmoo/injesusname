@@ -56,10 +56,10 @@ function Hero() {
           로고(SVG)의 중심을 뷰파인더 프레임의 정중앙에 고정하고, 서브 텍스트와 버튼은 그 아래에 매답니다. */}
       <motion.div
         style={{ y: titleY, opacity: fade }}
-        className="absolute z-10 inset-x-0 top-[84px] bottom-5 flex items-center justify-center px-3"
+        className="absolute z-10 inset-x-0 top-[84px] bottom-5 pb-12 md:pb-14 flex items-center justify-center px-3"
       >
         {/* 폭은 화면 너비와 높이 중 작은 쪽을 따릅니다: 세로가 낮은 화면에서도 버튼이 하단 텍스트와 닿지 않도록 */}
-        <div className="relative w-[min(94vw,calc((max(100svh,620px)-430px)*2.37))] md:w-[min(60vw,1180px,calc((max(100svh,620px)-430px)*2.37))]">
+        <div className="relative w-[min(94vw,max(300px,calc((100svh-480px)*2.37)))] md:w-[min(60vw,1180px,max(440px,calc((100svh-480px)*2.37)))]">
           <h1 className="sr-only">INJESUSNAME</h1>
           <svg viewBox={HERO_VIEWBOX} className="block w-full h-auto overflow-visible" aria-hidden>
             <motion.path
@@ -96,7 +96,7 @@ function Hero() {
 
           <div className="absolute left-0 right-0 top-full flex flex-col items-center">
             <motion.div
-              className="mt-6 md:mt-8 flex flex-row gap-2.5 md:gap-3"
+              className="mt-6 md:mt-8 flex flex-row gap-2.5 md:gap-3 whitespace-nowrap"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 1.2, duration: 0.8 }}
