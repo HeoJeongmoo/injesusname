@@ -5,19 +5,19 @@ import { pad, won } from '../lib/format'
 export default function ProductCard({ product }: { product: Product }) {
   return (
     <Link to={`/product/${product.id}`} className="group block bg-ink">
-      <div className="relative aspect-[4/5] overflow-hidden bg-ink-2 flex items-center justify-center">
+      <div className="relative aspect-[4/5] overflow-hidden bg-ink-2 bg-[radial-gradient(circle_at_50%_45%,#1d1d1d_0%,#0e0e0e_70%)] flex items-center justify-center">
         <img
           src={product.image}
           alt={product.name}
           loading="lazy"
-          className="absolute inset-0 w-full h-full object-contain p-6 md:p-10 mix-blend-lighten transition-all duration-700 ease-out group-hover:scale-[1.04] group-hover:opacity-0"
+          className={`absolute inset-0 w-full h-full object-contain p-5 md:p-8 transition-all duration-700 ease-out group-hover:scale-[1.04] ${product.hoverImage ? 'group-hover:opacity-0' : ''}`}
         />
         {product.hoverImage && (
           <img
             src={product.hoverImage}
             alt=""
             loading="lazy"
-            className="absolute inset-0 w-full h-full object-contain p-6 md:p-10 mix-blend-lighten opacity-0 scale-[1.04] transition-all duration-700 ease-out group-hover:opacity-100 group-hover:scale-100"
+            className="absolute inset-0 w-full h-full object-contain p-5 md:p-8 opacity-0 scale-[1.04] transition-all duration-700 ease-out group-hover:opacity-100 group-hover:scale-100"
           />
         )}
 
@@ -34,7 +34,7 @@ export default function ProductCard({ product }: { product: Product }) {
       <div className="flex flex-col sm:flex-row items-start justify-between gap-2 sm:gap-3 px-3 md:px-4 py-3 md:py-4">
         <div>
           <h3 className="font-display text-lg md:text-xl uppercase leading-[0.95] tracking-wide line-clamp-2">{product.name}</h3>
-          <p className="micro text-ash mt-2">{product.category}</p>
+          <p className="micro text-ash mt-2">{product.color ?? product.category}</p>
         </div>
         <p className="micro whitespace-nowrap sm:order-none order-last">{won(product.price)}</p>
       </div>

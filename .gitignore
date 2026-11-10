@@ -22,3 +22,7 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# 상품 원본 목업(SVG/PNG, 장당 10~30MB) — 사이트에는 images/products/web 의 WebP만 사용합니다
+public/images/products/*.svg
+public/images/products/*.png

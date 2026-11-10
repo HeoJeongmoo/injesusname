@@ -17,9 +17,12 @@ export default function ProductDetail() {
 
   if (!product) return <NotFound />
 
-  const images = [product.image, product.hoverImage].filter(Boolean) as string[]
+  // 앞면 → 뒷면 순서
+  const images: [string, string][] = []
+  if (product.front) images.push(['Front', product.front])
+  if (product.back) images.push(['Back', product.back])
   const sizes = product.sizes ?? DEFAULT_SIZES
-  const related = products.filter((p) => p.id !== product.id && p.category === product.category).slice(0, 4)
+  const related = products.filter((p) => p.id !== product.id && p.name === product.name).concat(products.filter((p) => p.id !== product.id && p.name !== product.name)).slice(0, 4)
 
   const addToBag = () => {
     if (!size) {
@@ -35,11 +38,11 @@ export default function ProductDetail() {
       <div className="grid lg:grid-cols-[1.4fr_1fr]">
         {/* gallery */}
         <div className="flex flex-col gap-px bg-line lg:border-r border-line">
-          {images.map((src, i) => (
-            <div key={src + i} className="relative bg-black aspect-square flex items-center justify-center">
-              <img src={src} alt={`${product.name} ${i + 1}`} className="w-[82%] h-[82%] object-contain mix-blend-lighten" />
+          {images.map(([label, src], i) => (
+            <div key={src} className="relative bg-[radial-gradient(circle_at_50%_45%,#1a1a1a_0%,#000_70%)] aspect-square flex items-center justify-center">
+              <img src={src} alt={`${product.name} ${label}`} className="w-[82%] h-[82%] object-contain" />
               <span className="absolute top-4 left-4 micro text-ash">
-                {pad(i + 1, 2)} / {pad(images.length, 2)}
+                {pad(i + 1, 2)} / {pad(images.length, 2)} — {label}
               </span>
             </div>
           ))}
@@ -57,6 +60,7 @@ export default function ProductDetail() {
             <div>
               {product.tag && <p className="micro text-signal mb-4">● {product.tag}</p>}
               <h1 className="text-6xl md:text-7xl uppercase leading-[0.88]">{product.name}</h1>
+              {product.color && <p className="micro text-ash mt-3">Color — {product.color}</p>}
               <p className="micro mt-5 text-base">{won(product.price)}</p>
             </div>
 

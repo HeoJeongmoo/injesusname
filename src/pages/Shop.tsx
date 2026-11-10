@@ -3,7 +3,7 @@ import { NavLink, useLocation } from 'react-router-dom'
 import ProductGrid from '../components/ProductGrid'
 import Marquee from '../components/Marquee'
 import { products } from '../data/products'
-import { CATEGORY_LABELS, type Category } from '../types/product'
+import { CATEGORY_LABELS, inCategory, type Category } from '../types/product'
 
 type SortOrder = 'default' | 'low' | 'high'
 
@@ -34,7 +34,7 @@ export default function Shop() {
   const description = isCat ? CATEGORY_DESCRIPTION[category] : '전체 상품을 둘러보세요'
 
   const items = useMemo(() => {
-    const base = isCat ? products.filter((p) => p.category === category) : products
+    const base = isCat ? products.filter((p) => inCategory(p, category)) : products
     if (sort === 'low') return [...base].sort((a, b) => a.price - b.price)
     if (sort === 'high') return [...base].sort((a, b) => b.price - a.price)
     return base

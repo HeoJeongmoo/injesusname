@@ -12,7 +12,7 @@ import { products } from '../data/products'
 import { lookbook } from '../data/lookbook'
 import { BRAND, DROP } from '../config'
 import { pad, won } from '../lib/format'
-import type { Category } from '../types/product'
+import { inCategory, type Category } from '../types/product'
 
 export default function Home() {
   return (
@@ -120,24 +120,24 @@ function Hero() {
 /* ───────────────────────── DROP FEATURE ───────────────────────── */
 function DropFeature() {
   const hero = products[0]
-  const [view, setView] = useState<'back' | 'front'>('back')
+  const [view, setView] = useState<'front' | 'back'>('back')
 
   return (
     <section className="grid lg:grid-cols-2 border-b border-line">
       {/* image */}
-      <div className="relative bg-black aspect-square lg:aspect-auto lg:min-h-[100svh] flex items-center justify-center overflow-hidden lg:border-r border-line pb-5 md:pb-0">
+      <div className="relative bg-[radial-gradient(circle_at_50%_45%,#1a1a1a_0%,#000_70%)] aspect-square lg:aspect-auto lg:min-h-[100svh] flex items-center justify-center overflow-hidden lg:border-r border-line pb-5 md:pb-0">
         <motion.img
           key={view}
-          src={view === 'back' ? hero.image : hero.hoverImage}
+          src={view === 'back' ? hero.back : hero.front}
           alt={`${hero.name} ${view}`}
-          className="w-[86%] max-w-[760px] object-contain mix-blend-lighten"
+          className="w-[86%] max-w-[760px] object-contain"
           initial={{ opacity: 0, scale: 1.03 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.6 }}
         />
         <div className="absolute top-5 left-5 micro text-ash">Fig. {pad(hero.id)}</div>
         <div className="absolute bottom-0 md:bottom-5 left-1/2 -translate-x-1/2 flex border border-line">
-          {(['back', 'front'] as const).map((v) => (
+          {(['front', 'back'] as const).map((v) => (
             <button
               key={v}
               onClick={() => setView(v)}
@@ -296,7 +296,7 @@ const FILTERS: (Category | 'all')[] = ['all', 'men', 'women', 'unisex']
 
 function Collection() {
   const [f, setF] = useState<Category | 'all'>('all')
-  const list = useMemo(() => (f === 'all' ? products : products.filter((p) => p.category === f)).slice(0, 8), [f])
+  const list = useMemo(() => (f === 'all' ? products : products.filter((p) => inCategory(p, f))).slice(0, 8), [f])
 
   return (
     <section className="pt-28">

@@ -58,14 +58,14 @@ export default function CartDrawer() {
                         onClick={() => setOpen(false)}
                         className="w-24 aspect-[4/5] bg-ink-3 shrink-0 flex items-center justify-center"
                       >
-                        <img src={l.product.image} alt={l.product.name} className="w-full h-full object-contain mix-blend-lighten" />
+                        <img src={l.product.image} alt={l.product.name} className="w-full h-full object-contain" />
                       </Link>
                       <div className="flex-1 flex flex-col">
                         <div className="flex justify-between gap-3">
                           <p className="font-display text-xl uppercase leading-tight">{l.product.name}</p>
                           <p className="micro whitespace-nowrap">{won(l.product.price * l.qty)}</p>
                         </div>
-                        <p className="micro text-ash mt-1">Size {l.size}</p>
+                        <p className="micro text-ash mt-1">{l.product.color ? `${l.product.color} · ` : ''}Size {l.size}</p>
                         <div className="mt-auto flex items-center justify-between">
                           <div className="flex items-center border border-line">
                             <button className="w-8 h-8 micro" onClick={() => setQty(l.id, l.size, l.qty - 1)} aria-label="수량 감소">

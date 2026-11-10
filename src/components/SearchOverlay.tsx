@@ -64,7 +64,7 @@ export default function SearchOverlay({ open, onClose }: { open: boolean; onClos
                     className="group flex items-center gap-5 py-4 hover:pl-3 transition-all"
                   >
                     <div className="w-14 h-14 bg-ink-3 shrink-0">
-                      <img src={p.image} alt="" className="w-full h-full object-contain mix-blend-lighten" />
+                      <img src={p.image} alt="" className="w-full h-full object-contain" />
                     </div>
                     <span className="font-display text-2xl md:text-3xl uppercase flex-1">{p.name}</span>
                     <span className="micro text-ash">{won(p.price)}</span>

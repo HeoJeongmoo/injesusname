@@ -25,13 +25,13 @@ export default function Cart() {
             {lines.map((l) => (
               <li key={`${l.id}-${l.size}`} className="flex gap-5 md:gap-8 p-5 md:p-8">
                 <Link to={`/product/${l.id}`} className="w-28 md:w-40 aspect-[4/5] bg-ink-2 shrink-0 flex items-center justify-center">
-                  <img src={l.product.image} alt={l.product.name} className="w-full h-full object-contain p-3 mix-blend-lighten" />
+                  <img src={l.product.image} alt={l.product.name} className="w-full h-full object-contain p-3" />
                 </Link>
                 <div className="flex-1 flex flex-col">
                   <div className="flex justify-between gap-4">
                     <div>
                       <p className="font-display text-2xl md:text-4xl uppercase leading-none">{l.product.name}</p>
-                      <p className="micro text-ash mt-2">Size {l.size} · {won(l.product.price)}</p>
+                      <p className="micro text-ash mt-2">{l.product.color ? `${l.product.color} · ` : ''}Size {l.size} · {won(l.product.price)}</p>
                     </div>
                     <p className="micro whitespace-nowrap">{won(l.product.price * l.qty)}</p>
                   </div>
