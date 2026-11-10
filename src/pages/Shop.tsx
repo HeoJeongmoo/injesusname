@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react'
-import { useLocation } from 'react-router-dom'
+import { NavLink, useLocation } from 'react-router-dom'
 import ProductGrid from '../components/ProductGrid'
+import Marquee from '../components/Marquee'
 import { products } from '../data/products'
 import { CATEGORY_LABELS, type Category } from '../types/product'
 
@@ -12,53 +13,85 @@ const CATEGORY_DESCRIPTION: Record<Category, string> = {
   unisex: '성별 구분 없이 즐기는 컬렉션',
 }
 
+const SORTS: [SortOrder, string][] = [
+  ['default', '추천순'],
+  ['low', '낮은 가격순'],
+  ['high', '높은 가격순'],
+]
+
 function isCategory(value: string): value is Category {
   return value === 'men' || value === 'women' || value === 'unisex'
 }
 
 export default function Shop() {
   const { pathname } = useLocation()
-  const path = pathname.replace('/', '')
-  const category = path as Category | 'shop'
+  const category = pathname.replace('/', '')
   const isCat = isCategory(category)
 
   const [sort, setSort] = useState<SortOrder>('default')
 
-  const title = isCat ? CATEGORY_LABELS[category].toUpperCase() : 'SHOP'
+  const title = isCat ? CATEGORY_LABELS[category].toUpperCase() : 'SHOP ALL'
   const description = isCat ? CATEGORY_DESCRIPTION[category] : '전체 상품을 둘러보세요'
 
   const items = useMemo(() => {
-    const base = isCat
-      ? products.filter((p) => p.category === category)
-      : products
-
+    const base = isCat ? products.filter((p) => p.category === category) : products
     if (sort === 'low') return [...base].sort((a, b) => a.price - b.price)
     if (sort === 'high') return [...base].sort((a, b) => b.price - a.price)
     return base
   }, [category, isCat, sort])
 
   return (
-    <section className="pt-28 px-4 pb-20">
-      <div className="max-w-3xl mx-auto text-center">
-        <h1 className="text-5xl font-bebas tracking-wide">{title}</h1>
-        <p className="text-base mt-4 opacity-60">{description}</p>
-        <p className="text-sm mt-1 opacity-40">{items.length} products</p>
+    <section className="pt-16">
+      <div className="px-5 md:px-8 pt-16 md:pt-24 pb-10 flex flex-col md:flex-row md:items-end justify-between gap-6">
+        <div>
+          <p className="micro text-ash">{description}</p>
+          <h1 className="mt-3 text-7xl md:text-[10vw] leading-[0.85]">
+            {title}
+            <sup className="micro text-ash align-top ml-2">({items.length})</sup>
+          </h1>
+        </div>
       </div>
 
-      <div className="max-w-5xl mx-auto mt-10 flex items-center justify-end">
+      <div className="sticky top-16 z-30 bg-ink/85 backdrop-blur-md border-y border-line px-5 md:px-8 h-12 flex items-center justify-between">
+        <nav className="flex gap-5 overflow-x-auto no-scrollbar">
+          {[
+            ['/shop', 'All'],
+            ['/men', 'Men'],
+            ['/women', 'Women'],
+            ['/unisex', 'Unisex'],
+          ].map(([to, label]) => (
+            <NavLink key={to} to={to} className={({ isActive }) => `micro link-line ${isActive ? 'active' : 'text-ash hover:text-bone'}`}>
+              {label}
+            </NavLink>
+          ))}
+        </nav>
+        <div className="hidden sm:flex gap-5">
+          {SORTS.map(([k, label]) => (
+            <button
+              key={k}
+              onClick={() => setSort(k)}
+              className={`micro link-line ${sort === k ? 'active' : 'text-ash hover:text-bone'}`}
+            >
+              {label}
+            </button>
+          ))}
+        </div>
         <select
           value={sort}
           onChange={(e) => setSort(e.target.value as SortOrder)}
-          className="border border-gray-300 px-3 py-2 text-sm uppercase tracking-wide font-medium outline-none rounded-sm bg-white/0 text-[var(--color-text)]"
+          className="sm:hidden bg-transparent micro text-bone outline-none"
           aria-label="정렬"
         >
-          <option value="default">추천순</option>
-          <option value="low">낮은 가격순</option>
-          <option value="high">높은 가격순</option>
+          {SORTS.map(([k, label]) => (
+            <option key={k} value={k} className="bg-ink">
+              {label}
+            </option>
+          ))}
         </select>
       </div>
 
-      <ProductGrid title="" products={items} />
+      <ProductGrid products={items} />
+      <Marquee className="mt-24" reverse />
     </section>
   )
 }

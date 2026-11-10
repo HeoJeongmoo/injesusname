@@ -1,71 +1,214 @@
 @import "tailwindcss";
 
-* {
-  box-sizing: border-box;
-  font-family: 'Pretendard', system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+/* ───────────────────────── Design tokens ───────────────────────── */
+@theme {
+  --color-ink: #070707;
+  --color-ink-2: #0e0e0e;
+  --color-ink-3: #171717;
+  --color-line: rgba(236, 233, 226, 0.12);
+  --color-bone: #ece9e2;
+  --color-ash: #8c8a85;
+  --color-signal: #ff3b1f;
+
+  --font-display: 'Bebas Neue', 'Pretendard', sans-serif;
+  --font-mono: 'JetBrains Mono', 'Pretendard', ui-monospace, monospace;
+  --font-sans: 'Pretendard', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+}
+
+/* ───────────────────────── Base ───────────────────────── */
+html {
+  background: var(--color-ink);
+  color-scheme: dark;
 }
 
 body {
   margin: 0;
-  color: var(--color-text);
-  background: linear-gradient(180deg, var(--color-bg-1), var(--color-bg-2));
+  background: var(--color-ink);
+  color: var(--color-bone);
+  font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
 }
 
 #root {
-  width: 100%;
-  max-width: 100%;
-  margin: 0 auto;
-  text-align: center;
   min-height: 100svh;
   display: flex;
   flex-direction: column;
-  box-sizing: border-box;
 }
 
-p {
-  margin: 0;
+::selection {
+  background: var(--color-bone);
+  color: var(--color-ink);
 }
 
-a.logo {
-  font-size: 28px;
-  letter-spacing: 0.06em;
-  color: var(--color-accent);
-}
-
-:root {
-  --color-accent: #0f172a;
-  --color-accent-2: #111827;
-  --color-text: #0b1220;
-  --color-muted: #6b7280;
-  --color-bg-1: #ffffff;
-  --color-bg-2: #f7f8fb;
-  --radius: 10px;
-}
-
-.font-bebas {
-  font-family: 'Bebas Neue', sans-serif;
-  letter-spacing: 0.04em;
-}
-
-/* Make primary headings use Bebas Neue for consistent hero/title typography */
 h1, h2, h3 {
-  font-family: 'Bebas Neue', sans-serif;
-  letter-spacing: 0.03em;
+  font-family: var(--font-display);
+  font-weight: 400;
+  letter-spacing: 0.01em;
 }
 
-.btn-primary {
-  background: var(--color-accent);
-  color: white;
-  padding: 0.6rem 1rem;
-  border-radius: 0.5rem;
+/* 기존 코드 호환용 */
+.font-bebas {
+  font-family: var(--font-display);
+}
+
+/* ───────────────────────── Utilities ───────────────────────── */
+
+/* 티셔츠의 아웃라인 "JESUS" 타이포를 그대로 가져온 스타일 */
+.text-outline {
+  color: transparent;
+  -webkit-text-stroke: 1px rgba(236, 233, 226, 0.35);
+}
+.text-outline-strong {
+  color: transparent;
+  -webkit-text-stroke: 1.5px var(--color-bone);
+}
+
+/* 작은 모노 라벨 (티셔츠 밑단의 성경 구절 텍스트 느낌) */
+.micro {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+/* 필름 그레인 오버레이 */
+.grain::after {
+  content: '';
+  position: fixed;
+  inset: -50%;
+  z-index: 90;
+  pointer-events: none;
+  opacity: 0.07;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  animation: grain 1.2s steps(6) infinite;
+}
+
+@keyframes grain {
+  0% { transform: translate(0, 0); }
+  20% { transform: translate(-3%, 2%); }
+  40% { transform: translate(2%, -4%); }
+  60% { transform: translate(-4%, 1%); }
+  80% { transform: translate(3%, 3%); }
+  100% { transform: translate(0, 0); }
+}
+
+/* 무한 마퀴 */
+.marquee-track {
+  display: flex;
+  width: max-content;
+  animation: marquee 38s linear infinite;
+}
+.marquee-track.reverse {
+  animation-direction: reverse;
+}
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+
+/* 링크 밑줄 애니메이션 */
+.link-line {
+  position: relative;
+}
+.link-line::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: -3px;
+  width: 100%;
+  height: 1px;
+  background: currentColor;
+  transform: scaleX(0);
+  transform-origin: right;
+  transition: transform 0.35s cubic-bezier(0.7, 0, 0.2, 1);
+}
+.link-line:hover::after,
+.link-line.active::after {
+  transform: scaleX(1);
+  transform-origin: left;
+}
+
+/* 입력 필드 */
+.field {
+  width: 100%;
+  background: transparent;
+  border: 0;
+  border-bottom: 1px solid var(--color-line);
+  padding: 14px 0;
+  color: var(--color-bone);
+  font-size: 15px;
+  outline: none;
+  transition: border-color 0.2s;
+}
+.field::placeholder {
+  color: var(--color-ash);
+}
+.field:focus {
+  border-color: var(--color-bone);
+}
+
+/* 버튼 */
+.btn {
   display: inline-flex;
   align-items: center;
-  gap: 0.5rem;
+  justify-content: center;
+  gap: 10px;
+  height: 52px;
+  padding: 0 28px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  transition: background 0.25s, color 0.25s, border-color 0.25s;
+}
+.btn-solid {
+  background: var(--color-bone);
+  color: var(--color-ink);
+}
+.btn-solid:hover {
+  background: #fff;
+}
+.btn-ghost {
+  border: 1px solid var(--color-line);
+  color: var(--color-bone);
+}
+.btn-ghost:hover {
+  border-color: var(--color-bone);
+}
+.btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
 }
 
-.card-shadow {
-  box-shadow: 0 6px 18px rgba(16,24,40,0.06);
-  border-radius: var(--radius);
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  scrollbar-width: none;
+}
+
+/* 녹화 표시등 깜빡임 */
+.rec-blink {
+  animation: rec-blink 1.2s steps(1) infinite;
+  box-shadow: 0 0 8px rgba(255, 59, 31, 0.8);
+}
+@keyframes rec-blink {
+  0%, 60% { opacity: 1; }
+  61%, 100% { opacity: 0; }
+}
+
+/* 스캔라인 */
+.scanlines {
+  background: repeating-linear-gradient(to bottom, rgba(0, 0, 0, 0.18) 0, rgba(0, 0, 0, 0.18) 1px, transparent 1px, transparent 3px);
+  mix-blend-mode: multiply;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rec-blink,
+  .marquee-track,
+  .grain::after {
+    animation: none;
+  }
 }

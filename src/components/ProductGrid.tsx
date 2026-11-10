@@ -7,22 +7,16 @@ interface ProductGridProps {
   products?: Product[]
 }
 
-export default function ProductGrid({
-  title = '',
-  products = allProducts,
-}: ProductGridProps) {
+// 1px 라인이 격자를 만드는 에디토리얼 그리드
+export default function ProductGrid({ title = '', products = allProducts }: ProductGridProps) {
   return (
-    <section className="mx-auto px-0 py-6 max-w-screen-2xl">
-      {title && (
-        <h2 className="text-2xl md:text-3xl font-bebas text-left mb-4 tracking-wide">
-          {title}
-        </h2>
-      )}
+    <section>
+      {title && <h2 className="px-5 md:px-8 mb-6 text-4xl md:text-5xl">{title}</h2>}
 
       {products.length === 0 ? (
-        <p className="text-center text-base opacity-60 py-8">등록된 상품이 없습니다.</p>
+        <p className="text-center text-ash py-20">등록된 상품이 없습니다.</p>
       ) : (
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-2 md:gap-4">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-px bg-line border-y border-line">
           {products.map((product) => (
             <ProductCard key={product.id} product={product} />
           ))}
