@@ -7,6 +7,7 @@ import Countdown from '../components/Countdown'
 import ProductGrid from '../components/ProductGrid'
 import Reveal from '../components/Reveal'
 import RecOverlay from '../components/RecOverlay'
+import { HERO_VIEWBOX, INJESUSNAME_PATH, JESUS_PATH } from '../components/heroPaths'
 import { products } from '../data/products'
 import { lookbook } from '../data/lookbook'
 import { BRAND, DROP } from '../config'
@@ -51,49 +52,63 @@ function Hero() {
       <div aria-hidden className="absolute inset-0 scanlines" />
       <div aria-hidden className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_55%,rgba(0,0,0,0.55)_100%)]" />
 
-      {/* center lockup — 티셔츠 등판 그래픽을 그대로 옮긴 구성 */}
-      <motion.div style={{ y: titleY, opacity: fade }} className="relative z-10 h-full flex flex-col items-center justify-center px-4">
-        <div className="relative flex items-center justify-center w-full">
-          <motion.span
-            aria-hidden
-            className="absolute font-display text-outline text-[38vw] md:text-[30vw] leading-none select-none"
-            initial={{ opacity: 0, y: 40 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1.6, delay: 0.3, ease: [0.2, 0.7, 0.2, 1] }}
-          >
-            JESUS
-          </motion.span>
-          <motion.h1
-            className="relative font-display text-outline-strong text-[13.5vw] md:text-[11vw] leading-none tracking-[0.01em]"
-            initial={{ opacity: 0, filter: 'blur(16px)' }}
-            animate={{ opacity: 1, filter: 'blur(0px)' }}
-            transition={{ duration: 1.2, delay: 0.2 }}
-          >
-            INJESUSNAME
-          </motion.h1>
-        </div>
-        <motion.p
-          className="micro mt-4 md:mt-6 tracking-[0.4em]"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 1 }}
-        >
-          {DROP.title}
-        </motion.p>
+      {/* center lockup — 티셔츠 등판 그래픽을 그대로 옮긴 구성.
+          로고(SVG)의 중심을 뷰파인더 프레임의 정중앙에 고정하고, 서브 텍스트와 버튼은 그 아래에 매답니다. */}
+      <motion.div
+        style={{ y: titleY, opacity: fade }}
+        className="absolute z-10 inset-x-0 top-[84px] bottom-5 flex items-center justify-center px-3"
+      >
+        <div className="relative w-[94vw] md:w-[60vw] max-w-[1180px]">
+          <h1 className="sr-only">INJESUSNAME</h1>
+          <svg viewBox={HERO_VIEWBOX} className="block w-full h-auto overflow-visible" aria-hidden>
+            <motion.path
+              d={JESUS_PATH}
+              fill="none"
+              stroke="rgba(236,233,226,0.35)"
+              strokeWidth={1}
+              vectorEffect="non-scaling-stroke"
+              initial={{ opacity: 0, y: 40 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 1.6, delay: 0.3, ease: [0.2, 0.7, 0.2, 1] }}
+            />
+            <motion.path
+              d={INJESUSNAME_PATH}
+              fill="none"
+              stroke="#ece9e2"
+              strokeWidth={1.5}
+              vectorEffect="non-scaling-stroke"
+              initial={{ opacity: 0, filter: 'blur(16px)' }}
+              animate={{ opacity: 1, filter: 'blur(0px)' }}
+              transition={{ duration: 1.2, delay: 0.2 }}
+            />
+          </svg>
 
-        <motion.div
-          className="mt-10 flex flex-col sm:flex-row gap-3"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 1.2, duration: 0.8 }}
-        >
-          <Link to="/product/1" className="btn btn-solid">
-            Shop {DROP.code}
-          </Link>
-          <a href="#waitlist" className="btn btn-ghost backdrop-blur-sm">
-            Get notified
-          </a>
-        </motion.div>
+          {/* 티셔츠처럼 CONQUERORS를 INJESUSNAME 바로 아래, JESUS 안쪽에 둡니다 */}
+          <motion.p
+            className="absolute inset-x-0 top-[72%] md:top-[69%] text-center micro tracking-[0.4em] pl-[0.4em]"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 1 }}
+          >
+            {DROP.title}
+          </motion.p>
+
+          <div className="absolute left-0 right-0 top-full flex flex-col items-center">
+            <motion.div
+              className="mt-6 md:mt-8 flex flex-row gap-2.5 md:gap-3"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 1.2, duration: 0.8 }}
+            >
+              <Link to="/product/1" className="btn btn-solid px-5! md:px-7! h-12! md:h-[52px]!">
+                Shop {DROP.code}
+              </Link>
+              <a href="#waitlist" className="btn btn-ghost backdrop-blur-sm px-5! md:px-7! h-12! md:h-[52px]!">
+                Get notified
+              </a>
+            </motion.div>
+          </div>
+        </div>
       </motion.div>
 
       <RecOverlay />

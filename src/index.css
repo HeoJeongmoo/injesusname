@@ -68,7 +68,7 @@ h1, h2, h3 {
 /* 작은 모노 라벨 (티셔츠 밑단의 성경 구절 텍스트 느낌) */
 .micro {
   font-family: var(--font-mono);
-  font-size: 10.5px;
+  font-size: 11.5px;
   letter-spacing: 0.14em;
   text-transform: uppercase;
 }
@@ -158,7 +158,7 @@ h1, h2, h3 {
   height: 52px;
   padding: 0 28px;
   font-family: var(--font-mono);
-  font-size: 12px;
+  font-size: 12.5px;
   letter-spacing: 0.16em;
   text-transform: uppercase;
   transition: background 0.25s, color 0.25s, border-color 0.25s;
@@ -203,6 +203,12 @@ h1, h2, h3 {
 .scanlines {
   background: repeating-linear-gradient(to bottom, rgba(0, 0, 0, 0.18) 0, rgba(0, 0, 0, 0.18) 1px, transparent 1px, transparent 3px);
   mix-blend-mode: multiply;
+}
+
+@media (min-width: 768px) {
+  .micro {
+    font-size: 12px;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
