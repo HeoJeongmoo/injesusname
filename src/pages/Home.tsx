@@ -58,7 +58,8 @@ function Hero() {
         style={{ y: titleY, opacity: fade }}
         className="absolute z-10 inset-x-0 top-[84px] bottom-5 flex items-center justify-center px-3"
       >
-        <div className="relative w-[94vw] md:w-[60vw] max-w-[1180px]">
+        {/* 폭은 화면 너비와 높이 중 작은 쪽을 따릅니다: 세로가 낮은 화면에서도 버튼이 하단 텍스트와 닿지 않도록 */}
+        <div className="relative w-[min(94vw,calc((max(100svh,620px)-430px)*2.37))] md:w-[min(60vw,1180px,calc((max(100svh,620px)-430px)*2.37))]">
           <h1 className="sr-only">INJESUSNAME</h1>
           <svg viewBox={HERO_VIEWBOX} className="block w-full h-auto overflow-visible" aria-hidden>
             <motion.path
