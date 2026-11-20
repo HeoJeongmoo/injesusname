@@ -42,7 +42,6 @@ export default function Login() {
 
   return (
     <AuthShell title="LOGIN" eyebrow="Members">
-      <SocialLogin />
       <form onSubmit={handleSubmit} className="flex flex-col gap-2">
         <input type="email" placeholder="이메일" value={email} onChange={(e) => setEmail(e.target.value)} required className="field" />
         <input type="password" placeholder="비밀번호" value={password} onChange={(e) => setPassword(e.target.value)} required className="field" />
@@ -57,6 +56,7 @@ export default function Login() {
           회원가입
         </Link>
       </p>
+      <SocialLogin />
     </AuthShell>
   )
 }

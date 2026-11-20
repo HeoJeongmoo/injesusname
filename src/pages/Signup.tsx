@@ -55,7 +55,6 @@ export default function Signup() {
         </div>
       ) : (
       <>
-      <SocialLogin />
       <form onSubmit={handleSubmit} className="flex flex-col gap-2">
         <input type="text" placeholder="이름" value={name} onChange={(e) => setName(e.target.value)} required className="field" />
         <input type="email" placeholder="이메일" value={email} onChange={(e) => setEmail(e.target.value)} required className="field" />
@@ -72,6 +71,7 @@ export default function Signup() {
           로그인
         </Link>
       </p>
+      <SocialLogin />
       </>
       )}
     </AuthShell>
