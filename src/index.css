@@ -263,3 +263,10 @@ h1, h2, h3 {
   font-size: 13px;
   color: var(--color-ash);
 }
+
+/* 드롭다운 목록: 윈도우 크롬 등에서 흰 배경 + 밝은 글자로 안 보이던 문제 */
+select option,
+select optgroup {
+  background-color: var(--color-ink-2);
+  color: var(--color-bone);
+}
