@@ -18,7 +18,8 @@
 1. supabase.com → New project (Region: Seoul)
 2. **SQL Editor** 에서 `supabase/schema.sql` 전체를 붙여넣고 Run
    - 파일 맨 아래 `'[관리자 이메일]'` 을 관리자로 쓸 로그인 이메일로 바꿔서 실행
-3. 이어서 `supabase/seed.sql` 실행 → 현재 상품 28개와 재고(사이즈별 10개)가 들어갑니다
+3. 이어서 `supabase/grants.sql` 실행 (schema.sql 에도 포함되어 있지만, 이전 버전으로 만들었다면 따로 실행)
+4. 이어서 `supabase/seed.sql` 실행 → 현재 상품 28개와 재고(사이즈별 10개)가 들어갑니다
 4. Project Settings → API 에서 키 복사 → Vercel → Settings → Environment Variables
 
 | 이름 | 값 | 비고 |
