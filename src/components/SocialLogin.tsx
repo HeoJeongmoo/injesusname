@@ -40,12 +40,12 @@ export default function SocialLogin() {
       <div className="flex items-center justify-center gap-4 sm:gap-5">
         <button type="button" onClick={() => go('kakao')} disabled={busy !== null} className={item}>
           <KakaoIcon />
-          {busy === 'kakao' ? '이동 중…' : <>카카오<span className="hidden sm:inline"> 아이디로</span> 로그인</>}
+          {busy === 'kakao' ? '이동 중…' : <>카카오 로그인</>}
         </button>
         <span aria-hidden className="w-px h-3.5 bg-line" />
         <button type="button" onClick={() => go('google')} disabled={busy !== null} className={item}>
           <GoogleIcon />
-          {busy === 'google' ? '이동 중…' : <>구글<span className="hidden sm:inline"> 아이디로</span> 로그인</>}
+          {busy === 'google' ? '이동 중…' : <>구글 로그인</>}
         </button>
       </div>
       {error && <p className="micro text-signal text-center mt-4">{error}</p>}
