@@ -1,5 +1,5 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from 'react'
-import { getProduct } from '../data/products'
+import { useProducts } from './ProductsContext'
 import type { Product } from '../types/product'
 
 export interface CartItem {
@@ -39,6 +39,7 @@ function load(): CartItem[] {
 export function CartProvider({ children }: { children: ReactNode }) {
   const [items, setItems] = useState<CartItem[]>(load)
   const [open, setOpen] = useState(false)
+  const { getProduct } = useProducts()
 
   useEffect(() => {
     try {
@@ -85,7 +86,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
       open,
       setOpen,
     }
-  }, [items, add, setQty, remove, clear, open])
+  }, [items, add, setQty, remove, clear, open, getProduct])
 
   return <CartContext.Provider value={value}>{children}</CartContext.Provider>
 }

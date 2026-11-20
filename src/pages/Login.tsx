@@ -1,8 +1,10 @@
-import { useState, type FormEvent } from 'react'
+import { useEffect, useState, type FormEvent } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import AuthShell from '../components/AuthShell'
 import SocialLogin from '../components/SocialLogin'
+import { takeNext } from '../lib/api'
+import { supabase } from '../lib/supabase'
 
 export default function Login() {
   const { user, login, logout } = useAuth()
@@ -14,6 +16,13 @@ export default function Login() {
 
   const [busy, setBusy] = useState(false)
 
+  // 결제·주문 조회 중 로그인하러 왔다면 로그인 후 그 페이지로 돌려보냅니다 (소셜 로그인 포함)
+  useEffect(() => {
+    if (!user) return
+    const next = takeNext()
+    if (next) navigate(next, { replace: true })
+  }, [user, navigate])
+
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault()
     setBusy(true)
@@ -23,7 +32,7 @@ export default function Login() {
       setError(err)
       return
     }
-    navigate('/')
+    navigate(takeNext() ?? '/')
   }
 
   if (user) {
@@ -33,7 +42,11 @@ export default function Login() {
         <p className="micro text-ash mt-2">
           {user.email || '이메일 정보 없음'} · {user.provider === 'kakao' ? '카카오' : user.provider === 'google' ? 'Google' : '이메일'} 로그인
         </p>
-        <button onClick={logout} className="btn btn-ghost w-full mt-10">
+        <Link to="/account/orders" className="btn btn-solid w-full mt-10">
+          주문 내역
+        </Link>
+        <AdminLink />
+        <button onClick={logout} className="btn btn-ghost w-full mt-3">
           로그아웃
         </button>
       </AuthShell>
@@ -59,4 +72,17 @@ export default function Login() {
       <SocialLogin />
     </AuthShell>
   )
+}
+
+/** 관리자 계정일 때만 관리자 페이지 링크 표시 */
+function AdminLink() {
+  const [isAdmin, setIsAdmin] = useState(false)
+  useEffect(() => {
+    supabase?.rpc('is_admin').then(({ data }) => setIsAdmin(Boolean(data)))
+  }, [])
+  return isAdmin ? (
+    <Link to="/admin" className="btn btn-ghost w-full mt-3">
+      관리자 페이지
+    </Link>
+  ) : null
 }

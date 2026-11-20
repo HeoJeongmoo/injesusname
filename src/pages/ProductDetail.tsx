@@ -2,20 +2,24 @@ import { useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import ProductGrid from '../components/ProductGrid'
-import { getProduct, products } from '../data/products'
+import { useProducts } from '../context/ProductsContext'
 import { useCart } from '../context/CartContext'
-import { CATEGORY_LABELS, DEFAULT_SIZES } from '../types/product'
+import { CATEGORY_LABELS, DEFAULT_SIZES, isSoldOut, stockOf } from '../types/product'
 import { pad, won } from '../lib/format'
 import NotFound from './NotFound'
+import SizeGuide from '../components/SizeGuide'
+import { POLICY } from '../config'
 
 export default function ProductDetail() {
   const { id } = useParams()
+  const { products, getProduct, loading } = useProducts()
   const product = getProduct(Number(id))
   const { add, setOpen } = useCart()
   const [size, setSize] = useState<string | null>(null)
   const [warn, setWarn] = useState(false)
+  const [guide, setGuide] = useState(false)
 
-  if (!product) return <NotFound />
+  if (!product) return loading ? <div className="min-h-[80svh]" /> : <NotFound />
 
   // 앞면 → 뒷면 순서
   const images: [string, string][] = []
@@ -23,6 +27,8 @@ export default function ProductDetail() {
   if (product.back) images.push(['Back', product.back])
   const sizes = product.sizes ?? DEFAULT_SIZES
   const related = products.filter((p) => p.id !== product.id && p.name === product.name).concat(products.filter((p) => p.id !== product.id && p.name !== product.name)).slice(0, 4)
+
+  const soldOut = isSoldOut(product)
 
   const addToBag = () => {
     if (!size) {
@@ -71,32 +77,42 @@ export default function ProductDetail() {
                 <span className={warn && !size ? 'text-signal' : 'text-ash'}>
                   {warn && !size ? '사이즈를 선택해주세요' : 'Select size'}
                 </span>
-                <span className="text-ash">Size guide</span>
+                <button type="button" onClick={() => setGuide(true)} className="text-ash link-line hover:text-bone">
+                  Size guide
+                </button>
               </div>
               <div className="grid grid-cols-4 gap-px bg-line border border-line">
-                {sizes.map((s) => (
-                  <button
-                    key={s}
-                    onClick={() => {
-                      setSize(s)
-                      setWarn(false)
-                    }}
-                    className={`h-12 micro transition-colors ${size === s ? 'bg-bone text-ink' : 'bg-ink hover:bg-ink-3'}`}
-                  >
-                    {s}
-                  </button>
-                ))}
+                {sizes.map((s) => {
+                  const left = stockOf(product, s)
+                  const out = left <= 0
+                  return (
+                    <button
+                      key={s}
+                      disabled={out}
+                      onClick={() => {
+                        setSize(s)
+                        setWarn(false)
+                      }}
+                      className={`relative h-12 micro transition-colors ${
+                        out ? 'bg-ink text-ash/40 line-through cursor-not-allowed' : size === s ? 'bg-bone text-ink' : 'bg-ink hover:bg-ink-3'
+                      }`}
+                    >
+                      {s}
+                      {!out && left <= 3 && <span className="absolute top-1 right-1.5 text-[9px] text-signal no-underline">{left}</span>}
+                    </button>
+                  )
+                })}
               </div>
             </div>
 
-            <motion.button whileTap={{ scale: 0.98 }} onClick={addToBag} className="btn btn-solid w-full">
-              Add to bag — {won(product.price)}
+            <motion.button whileTap={{ scale: 0.98 }} onClick={addToBag} disabled={soldOut} className="btn btn-solid w-full">
+              {soldOut ? 'Sold out' : `Add to bag — ${won(product.price)}`}
             </motion.button>
 
             <ul className="border-t border-line text-sm">
               {[
-                ['Shipping', '결제 후 2–5 영업일 내 출고'],
-                ['Returns', '수령 후 7일 이내 교환·반품 가능'],
+                ['Shipping', `결제 후 ${POLICY.dispatchDays} 영업일 내 출고 · ${won(POLICY.freeShippingOver)} 이상 무료배송`],
+                ['Returns', `수령 후 ${POLICY.returnDays}일 이내 교환·반품 가능`],
                 ['Care', '찬물 단독 세탁, 프린트 면 뒤집어 건조'],
               ].map(([k, v]) => (
                 <li key={k} className="flex justify-between gap-6 py-4 border-b border-line">
@@ -115,6 +131,7 @@ export default function ProductDetail() {
           <ProductGrid products={related} />
         </section>
       )}
+      <SizeGuide open={guide} onClose={() => setGuide(false)} />
     </div>
   )
 }

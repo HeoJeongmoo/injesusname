@@ -2,7 +2,7 @@ import { useMemo, useState } from 'react'
 import { NavLink, useLocation } from 'react-router-dom'
 import ProductGrid from '../components/ProductGrid'
 import Marquee from '../components/Marquee'
-import { products } from '../data/products'
+import { useProducts } from '../context/ProductsContext'
 import { CATEGORY_LABELS, inCategory, type Category } from '../types/product'
 
 type SortOrder = 'default' | 'low' | 'high'
@@ -29,6 +29,7 @@ export default function Shop() {
   const isCat = isCategory(category)
 
   const [sort, setSort] = useState<SortOrder>('default')
+  const { products } = useProducts()
 
   const title = isCat ? CATEGORY_LABELS[category].toUpperCase() : 'SHOP ALL'
   const description = isCat ? CATEGORY_DESCRIPTION[category] : '전체 상품을 둘러보세요'
@@ -38,7 +39,7 @@ export default function Shop() {
     if (sort === 'low') return [...base].sort((a, b) => a.price - b.price)
     if (sort === 'high') return [...base].sort((a, b) => b.price - a.price)
     return base
-  }, [category, isCat, sort])
+  }, [category, isCat, sort, products])
 
   return (
     <section className="pt-16">

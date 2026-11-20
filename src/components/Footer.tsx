@@ -1,21 +1,43 @@
 import { useState, type FormEvent } from 'react'
 import { Link } from 'react-router-dom'
-import { BRAND, DROP } from '../config'
+import { BRAND, BUSINESS, DROP } from '../config'
+import { supabase } from '../lib/supabase'
 
 const LIST_KEY = 'injesusname_waitlist'
 
 export default function Footer() {
   const [email, setEmail] = useState('')
+  const [agree, setAgree] = useState(false)
   const [done, setDone] = useState(false)
+  const [busy, setBusy] = useState(false)
+  const [error, setError] = useState<string | null>(null)
 
-  const submit = (e: FormEvent) => {
+  const submit = async (e: FormEvent) => {
     e.preventDefault()
-    if (!email.trim()) return
-    try {
-      const list: string[] = JSON.parse(localStorage.getItem(LIST_KEY) || '[]')
-      if (!list.includes(email)) localStorage.setItem(LIST_KEY, JSON.stringify([...list, email.trim()]))
-    } catch {
-      /* ignore */
+    const value = email.trim().toLowerCase()
+    if (!value) return
+    if (!agree) {
+      setError('알림 수신(마케팅 정보 수신)에 동의해 주세요.')
+      return
+    }
+    setError(null)
+    if (supabase) {
+      // Supabase 'waitlist' 테이블에 저장 (관리자 페이지에서 확인)
+      setBusy(true)
+      const { error: err } = await supabase.from('waitlist').insert({ email: value, source: DROP.code })
+      setBusy(false)
+      // 23505 = 이미 신청한 이메일 → 성공으로 처리
+      if (err && err.code !== '23505') {
+        setError('잠시 후 다시 시도해 주세요.')
+        return
+      }
+    } else {
+      try {
+        const list: string[] = JSON.parse(localStorage.getItem(LIST_KEY) || '[]')
+        if (!list.includes(value)) localStorage.setItem(LIST_KEY, JSON.stringify([...list, value]))
+      } catch {
+        /* ignore */
+      }
     }
     setDone(true)
     setEmail('')
@@ -43,7 +65,8 @@ export default function Footer() {
               <p className="micro text-ash mt-3">See you at the drop — in Jesus name.</p>
             </div>
           ) : (
-            <form onSubmit={submit} className="w-full flex items-end gap-4">
+            <form onSubmit={submit} className="w-full">
+              <div className="flex items-end gap-4">
               <label className="flex-1">
                 <span className="micro text-ash">Email</span>
                 <input
@@ -55,9 +78,23 @@ export default function Footer() {
                   className="field"
                 />
               </label>
-              <button type="submit" className="btn btn-solid shrink-0">
-                Notify me →
+              <button type="submit" disabled={busy} className="btn btn-solid shrink-0">
+                {busy ? '…' : 'Notify me →'}
               </button>
+              </div>
+              <label className="mt-4 flex items-start gap-2.5 text-[13px] text-ash cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={agree}
+                  onChange={(e) => setAgree(e.target.checked)}
+                  className="mt-0.5 accent-[var(--color-bone)]"
+                />
+                <span>
+                  드롭 오픈·이벤트 소식을 이메일로 받는 데 동의합니다. (선택 · 언제든 수신 거부 가능 ·{' '}
+                  <Link to="/privacy" className="underline">개인정보처리방침</Link>)
+                </span>
+              </label>
+              {error && <p className="micro text-signal mt-3">{error}</p>}
             </form>
           )}
         </div>
@@ -86,10 +123,24 @@ export default function Footer() {
           <h3 className="micro text-ash mb-5 font-mono">Info</h3>
           <ul className="space-y-3 text-sm">
             <li><a href={BRAND.instagram} target="_blank" rel="noreferrer" className="link-line">Instagram</a></li>
-            <li><Link to="/cart" className="link-line">Bag</Link></li>
-            <li><Link to="/login" className="link-line">Account</Link></li>
+            <li><Link to="/account/orders" className="link-line">주문 조회</Link></li>
+            <li><Link to="/returns" className="link-line">배송·교환·반품</Link></li>
+            <li><Link to="/terms" className="link-line">이용약관</Link></li>
+            <li><Link to="/privacy" className="link-line font-semibold">개인정보처리방침</Link></li>
           </ul>
         </div>
+      </div>
+
+      {/* 사업자 정보 (전자상거래법 표시 사항) */}
+      <div className="px-5 md:px-8 py-6 border-t border-line text-[12px] leading-[1.9] text-ash">
+        <p>
+          상호 {BUSINESS.companyName} <Sep /> 대표 {BUSINESS.ceo} <Sep /> 사업자등록번호 {BUSINESS.bizNumber} <Sep /> 통신판매업 신고{' '}
+          {BUSINESS.mailOrderNumber}
+        </p>
+        <p>
+          주소 {BUSINESS.address} <Sep /> 고객센터 {BUSINESS.phone} <Sep /> 이메일 {BUSINESS.email} <Sep /> 개인정보 보호책임자{' '}
+          {BUSINESS.privacyOfficer} <Sep /> 호스팅 {BUSINESS.hosting}
+        </p>
       </div>
 
       <div className="px-5 md:px-8 py-5 border-t border-line flex flex-col md:flex-row gap-2 justify-between micro text-ash">
@@ -115,4 +166,8 @@ export default function Footer() {
       </div>
     </footer>
   )
+}
+
+function Sep() {
+  return <span className="mx-1.5 text-line">|</span>
 }

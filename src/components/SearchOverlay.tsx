@@ -1,11 +1,12 @@
 import { AnimatePresence, motion } from 'framer-motion'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { products } from '../data/products'
+import { useProducts } from '../context/ProductsContext'
 import { won } from '../lib/format'
 
 export default function SearchOverlay({ open, onClose }: { open: boolean; onClose: () => void }) {
   const [q, setQ] = useState('')
+  const { products } = useProducts()
   const inputRef = useRef<HTMLInputElement>(null)
 
   useEffect(() => {
@@ -22,8 +23,8 @@ export default function SearchOverlay({ open, onClose }: { open: boolean; onClos
   const results = useMemo(() => {
     const s = q.trim().toLowerCase()
     if (!s) return []
-    return products.filter((p) => p.name.toLowerCase().includes(s) || p.category.includes(s))
-  }, [q])
+    return products.filter((p) => p.name.toLowerCase().includes(s) || (p.color ?? '').toLowerCase().includes(s) || p.category.includes(s))
+  }, [q, products])
 
   return (
     <AnimatePresence>

@@ -18,7 +18,14 @@ export interface Product {
   tag?: string
   description?: string
   sizes?: string[]
+  /** 사이즈별 남은 수량. 없으면(정적 데이터) 재고 제한 없음 */
+  stock?: Record<string, number>
 }
+
+/** 해당 사이즈 남은 수량 (재고 정보가 없으면 Infinity) */
+export const stockOf = (p: Product, size: string) => (p.stock ? (p.stock[size] ?? 0) : Infinity)
+/** 모든 사이즈 품절 여부 */
+export const isSoldOut = (p: Product) => (p.stock ? Object.values(p.stock).every((q) => q <= 0) : false)
 
 export const CATEGORY_LABELS: Record<Category, string> = {
   men: 'Men',

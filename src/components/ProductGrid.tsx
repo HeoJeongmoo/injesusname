@@ -1,5 +1,5 @@
 import ProductCard from './ProductCard'
-import { products as allProducts } from '../data/products'
+import { useProducts } from '../context/ProductsContext'
 import type { Product } from '../types/product'
 
 interface ProductGridProps {
@@ -8,7 +8,9 @@ interface ProductGridProps {
 }
 
 // 1px 라인이 격자를 만드는 에디토리얼 그리드
-export default function ProductGrid({ title = '', products = allProducts }: ProductGridProps) {
+export default function ProductGrid({ title = "", products: given }: ProductGridProps) {
+  const { products: all } = useProducts()
+  const products = given ?? all
   return (
     <section>
       {title && <h2 className="px-5 md:px-8 mb-6 text-4xl md:text-5xl">{title}</h2>}

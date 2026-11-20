@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom'
-import type { Product } from '../types/product'
+import { isSoldOut, type Product } from '../types/product'
 import { pad, won } from '../lib/format'
 
 export default function ProductCard({ product }: { product: Product }) {
@@ -23,7 +23,11 @@ export default function ProductCard({ product }: { product: Product }) {
 
         <div className="absolute top-3 left-3 right-3 flex justify-between micro text-ash">
           <span>{pad(product.id)}</span>
-          {product.tag && <span className="text-bone bg-ink/70 px-2 py-1">{product.tag}</span>}
+          {isSoldOut(product) ? (
+            <span className="text-ink bg-bone px-2 py-1">SOLD OUT</span>
+          ) : (
+            product.tag && <span className="text-bone bg-ink/70 px-2 py-1">{product.tag}</span>
+          )}
         </div>
 
         <div className="absolute inset-x-0 bottom-0 translate-y-full group-hover:translate-y-0 transition-transform duration-500 ease-out">

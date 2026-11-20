@@ -8,7 +8,7 @@ import ProductGrid from '../components/ProductGrid'
 import Reveal from '../components/Reveal'
 import RecOverlay from '../components/RecOverlay'
 import { HERO_VIEWBOX, INJESUSNAME_PATH, JESUS_PATH } from '../components/heroPaths'
-import { products } from '../data/products'
+import { useProducts } from '../context/ProductsContext'
 import { lookbook } from '../data/lookbook'
 import { BRAND, DROP } from '../config'
 import { pad, won } from '../lib/format'
@@ -119,8 +119,10 @@ function Hero() {
 
 /* ───────────────────────── DROP FEATURE ───────────────────────── */
 function DropFeature() {
+  const { products } = useProducts()
   const hero = products[0]
   const [view, setView] = useState<'front' | 'back'>('back')
+  if (!hero) return null
 
   return (
     <section className="grid lg:grid-cols-2 border-b border-line">
@@ -296,7 +298,8 @@ const FILTERS: (Category | 'all')[] = ['all', 'men', 'women', 'unisex']
 
 function Collection() {
   const [f, setF] = useState<Category | 'all'>('all')
-  const list = useMemo(() => (f === 'all' ? products : products.filter((p) => inCategory(p, f))).slice(0, 8), [f])
+  const { products } = useProducts()
+  const list = useMemo(() => (f === 'all' ? products : products.filter((p) => inCategory(p, f))).slice(0, 8), [f, products])
 
   return (
     <section className="pt-28">

@@ -1,9 +1,12 @@
 import { Link } from 'react-router-dom'
 import { useCart } from '../context/CartContext'
 import { won } from '../lib/format'
+import { POLICY } from '../config'
+import { paymentsEnabled } from '../lib/api'
 
 export default function Cart() {
   const { lines, subtotal, setQty, remove, count } = useCart()
+  const shippingFee = subtotal >= POLICY.freeShippingOver || subtotal === 0 ? 0 : POLICY.shippingFee
 
   return (
     <section className="pt-16">
@@ -52,13 +55,19 @@ export default function Cart() {
             <div className="lg:sticky lg:top-24 space-y-5">
               <p className="micro text-ash">Order summary</p>
               <div className="flex justify-between micro"><span className="text-ash">Subtotal</span><span>{won(subtotal)}</span></div>
-              <div className="flex justify-between micro"><span className="text-ash">Shipping</span><span>결제 시 계산</span></div>
+              <div className="flex justify-between micro"><span className="text-ash">Shipping</span><span>{shippingFee ? won(shippingFee) : 'FREE'}</span></div>
               <div className="flex justify-between border-t border-line pt-5">
                 <span className="font-display text-3xl">TOTAL</span>
-                <span className="font-display text-3xl">{won(subtotal)}</span>
+                <span className="font-display text-3xl">{won(subtotal + shippingFee)}</span>
               </div>
-              <button disabled className="btn btn-solid w-full">Checkout — opening soon</button>
-              <p className="micro text-ash text-center">결제는 런칭과 함께 오픈됩니다</p>
+              {paymentsEnabled ? (
+                <Link to="/checkout" className="btn btn-solid w-full">Checkout</Link>
+              ) : (
+                <>
+                  <button disabled className="btn btn-solid w-full">Checkout — opening soon</button>
+                  <p className="micro text-ash text-center">결제는 런칭과 함께 오픈됩니다</p>
+                </>
+              )}
             </div>
           </aside>
         </div>
