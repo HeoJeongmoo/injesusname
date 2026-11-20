@@ -5,8 +5,11 @@ import { createClient } from '@supabase/supabase-js'
 export const SHIPPING_FEE = 3000
 export const FREE_SHIPPING_OVER = 50000
 
-const SUPABASE_URL = process.env.SUPABASE_URL ?? process.env.VITE_SUPABASE_URL
-const SERVICE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY
+const SUPABASE_URL = (process.env.SUPABASE_URL ?? process.env.VITE_SUPABASE_URL)
+  ?.trim()
+  .replace(/\/+$/, '')
+  .replace(/\/(rest|auth)\/v1$/, '')
+const SERVICE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY?.trim()
 export const TOSS_SECRET_KEY = process.env.TOSS_SECRET_KEY
 
 export function admin() {
